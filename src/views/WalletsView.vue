@@ -2,11 +2,11 @@
   <div>
     <h1>Мои кошельки</h1>
     <div class="mt-4">
-      <VRow>
-        <VCol cols="4">
+      <div class="flex flex-wrap -mx-2 mb-6">
+        <div class="w-full md:w-1/3 px-2">
           <WalletsList></WalletsList>
-        </VCol>
-      </VRow>
+        </div>
+      </div>
 
     </div>
   </div>

@@ -1,32 +1,41 @@
 <template>
     <div>
-        <!-- <v-btn @click="openModal">Open Modal</v-btn> -->
-        <v-dialog v-model="modalOpen" max-width="500px" @click:outside="closeModal">
-            <v-card>
-                <v-card-title>
-                    <span class="headline">Создание нового кошелька</span>
-                </v-card-title>
-                <v-card-text v-if="modalOpen">
-                    
-                    <div v-if="loading">
-                        <v-progress-linear indeterminate color="primary"></v-progress-linear>
-                    </div>
+        <Dialog v-model:visible="modalOpen" max-width="500px" modal :header="walletId > 0 ? 'Редактирование кошелька' : 'Создание нового кошелька'" @hide="closeModal">
 
-                    <div v-if="wallet">
-                        <v-text-field v-model="wallet.name" label="Name"></v-text-field>
-                        <v-textarea v-model="wallet.description" label="Description"></v-textarea>
-                    </div>
+          <div v-if="loading">
+            <ProgressBar color="info"
+                         mode="indeterminate"
+                         style="height: 4px;"
+                         :pt="{ value: { style: { backgroundColor: '#38bdf9' } } }"
+            ></ProgressBar>
+          </div>
 
-                </v-card-text>
+          <div v-if="modalOpen">
+            <div v-if="wallet" class="w-full px-2">
+              <Textarea
+                v-model="wallet.name"
+                rows="2"
+                required
+                placeholder="name"
+                fluid
+                :disabled="loading"
+              />
 
-                <v-card-actions>
-                    <v-btn density="compact" color="primary" @click="closeModal">Закрыть</v-btn>
+              <Textarea
+                v-model="wallet.description"
+                rows="4"
+                placeholder="description"
+                fluid
+                :disabled="loading"
+              />
+            </div>
+          </div>
 
-                    <v-spacer></v-spacer>
-                    <v-btn density="compact" color="primary" @click="saveWallet">Сохранить</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+          <div class="flex justify-end gap-2 mt-4">
+            <Button type="button" :disabled="loading" label="Закрыть" size="small" severity="secondary" @click="closeModal"></Button>
+            <Button type="button" :disabled="loading" label="Сохранить" size="small" severity="success" @click="saveWallet"></Button>
+          </div>
+        </Dialog>
     </div>
 </template>
 

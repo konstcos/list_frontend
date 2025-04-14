@@ -1,30 +1,24 @@
 <template>
   <div>
-    <v-dialog v-model="modalOpen" max-width="500px" @click:outside="closeModal">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Линк</span>
-        </v-card-title>
-        <v-card-text v-if="modalOpen">
+    <Dialog v-model:visible="modalOpen" modal header="Линк" :style="{ width: '25rem' }" @hide="closeModal">
 
-          <div v-if="loading">
-            <v-progress-linear indeterminate color="primary"></v-progress-linear>
-          </div>
+      <div v-if="modalOpen">
+        <div v-if="linkEditor" class="w-full px-2">
+          <Textarea
+            v-model="linkEditor.link"
+            rows="3"
+            required
+            placeholder="Link"
+            fluid />
+        </div>
+      </div>
 
-          <div v-if="linkEditor">
-            <v-textarea v-model="linkEditor.link" label="Link" rows="2"></v-textarea>
-          </div>
+      <div class="flex justify-end gap-2 mt-4">
+        <Button type="button" label="Закрыть" size="small" severity="secondary" @click="closeModal"></Button>
+        <Button type="button" label="Сохранить" size="small" severity="success" @click="saveLink"></Button>
+      </div>
 
-        </v-card-text>
-
-        <v-card-actions>
-          <v-btn density="compact" color="primary" @click="closeModal">Закрыть</v-btn>
-
-          <v-spacer></v-spacer>
-          <v-btn density="compact" color="primary" @click="saveLink">Сохранить</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    </Dialog>
   </div>
 </template>
 

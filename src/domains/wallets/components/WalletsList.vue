@@ -1,20 +1,40 @@
 <template>
   <div>
-    <div>
-      <VCard>
-        <VCardText>
-          <VRow class="mb-3">
-            <VCol>
-              <v-btn :loading="loading" @click="loadWallets" color="primary" density="compact"
-                icon="mdi:mdi-reload"></v-btn>
-            </VCol>
-            <VCol class="text-end">
-              <v-btn @click="openWalletEditor(0)" :disabled="loading" density="compact" icon="mdi:mdi-plus"></v-btn>
-            </VCol>
-          </VRow>
+    <Card>
+        <template #content>
+          <div class="flex flex-wrap -mx-2 mb-6">
+            <div class="w-full md:w-1/2 px-2">
+              <Button
+                :loading="loading"
+                @click="loadWallets"
+                severity="info"
+                rounded
+                variant="text"
+                icon="pi pi-refresh"
+                size="small"
+              >
+              </Button>
+            </div>
+            <div class="w-full md:w-1/2 px-2 text-end">
+              <Button
+                @click="openWalletEditor(0)"
+                :disabled="loading"
+                icon="pi pi-plus"
+                severity="severity"
+                rounded
+                variant="text"
+                size="small"
+              >
+              </Button>
+            </div>
+          </div>
 
           <div v-if="loading">
-            <v-progress-linear indeterminate color="primary"></v-progress-linear>
+            <ProgressBar color="info"
+                         mode="indeterminate"
+                         style="height: 4px;"
+                         :pt="{ value: { style: { backgroundColor: '#38bdf9' } } }"
+            ></ProgressBar>
           </div>
 
           <div v-if="!loading && wallets.length === 0" class="text-center">
@@ -23,57 +43,48 @@
 
           <div v-if="wallets.length > 0" class="mt-3">
 
-            <v-list-item v-for="wallet of wallets" :key="wallet.id" variant="elevated" class="mb-3"
-            >
+            <!-- Список кошельков -->
+            <ul class="list-none p-0 m-0">
+              <li
+                v-for="wallet in wallets"
+                :key="wallet.id"
+                class="flex justify-content-between align-items-center pb-3 surface-card shadow-1 border-round mb-2"
+              >
+                <div class="cursor-pointer flex-1">
+                  <div class="text-lg font-medium">{{ wallet.balance }}грн</div>
+                  <div class="text-sm text-secondary">{{ wallet.name }}</div>
+                </div>
 
-              <v-list-item-title @click="showWalletDetail(wallet.id)">
-                {{ wallet.balance }} грн
-              </v-list-item-title>
+                <i class="cursor-pointer pi pi-ellipsis-v ml-2" @click="openMenu($event, wallet)"></i>
+              </li>
+            </ul>
 
-              <v-list-item-subtitle @click="showWalletDetail(wallet.id)">
-                {{ wallet.name }}
-              </v-list-item-subtitle>
-
-              <template v-slot:append>
-                <!-- <v-btn color="grey-lighten-1" icon="mdi:mdi-dots-vertical" variant="text"></v-btn> -->
-
-                <template v-if="deleteWalletModal.show && deleteWalletModal.walletId === wallet.id"> 
-                  <v-btn size="x-small" @click="cancelDelation()" :disabled="deleteWalletModal.loading">отмена</v-btn>
-                  <v-btn size="x-small" @click="makeDeleteWallet()" class="ml-1" color="red-accent-4" :loading="deleteWalletModal.loading">удалить</v-btn>
-                </template>
-
-                <v-menu v-else>
-                  <template v-slot:activator="{ props }">
-                    <v-btn icon="mdi:mdi-dots-vertical" v-bind="props" color="grey-lighten-1" variant="text"></v-btn>
-                  </template>
-
-                  <v-list class="text-center">
-                    <v-list-item>
-                      <v-list-item-title>
-                        <v-btn density="compact" @click="openWalletEditor(wallet.id)">
-                          Редактировать
-                        </v-btn>
-                      </v-list-item-title>
-                    </v-list-item>
-                    <v-list-item>
-                      <v-list-item-title>
-                        <v-btn density="compact" @click="deleteWallet(wallet.id)" color="red-accent-4">
-                          Удалить
-                        </v-btn>
-                      </v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-
-
-              </template>
-            </v-list-item>
+            <!-- Один‑единственный OverlayPanel -->
+            <Popover ref="op">
+              <div style="display: flex; flex-direction: column; gap: 8px; width: 150px">
+                <Button
+                  label="Редактировать"
+                  icon="pi pi-pencil"
+                  @click="editActiveWallet"
+                  style="width: 100%; justify-content: flex-start"
+                  class="p-button-text"
+                  size="small"
+                />
+                <Button
+                  label="Удалить"
+                  icon="pi pi-trash"
+                  @click="deleteActiveWallet"
+                  style="width: 100%; justify-content: flex-start"
+                  class="p-button-text p-button-danger"
+                  size="small"
+                />
+              </div>
+            </Popover>
 
           </div>
 
-        </VCardText>
-      </VCard>
-    </div>
+        </template>
+      </Card>
 
     <WalletEditor v-model="walletEditorModal.show" :wallet-id="walletEditorModal.walletId" @reload="loadWallets()"/>
 
@@ -107,10 +118,42 @@ export default {
         show: false,
         walletId: 0,
         loading: false,
-      }
+      },
+      activeWallet: null
     }
   },
   methods: {
+    openMenu(event, wallet) {
+      this.activeWallet = wallet;
+      this.$refs.op.toggle(event);      // всего одна панель → один ref
+    },
+
+    editActiveWallet() {
+      if (this.activeWallet) {
+        this.openWalletEditor(this.activeWallet.id);
+        this.$refs.op.hide();
+      }
+    },
+    deleteActiveWallet() {
+      if (this.activeWallet) {
+        this.deleteWallet(this.activeWallet.id);
+        this.$refs.op.hide();
+      }
+    },
+    getMenuItems(wallet) {
+      return [
+        {
+          label: 'Редактировать',
+          icon: 'pi pi-pencil',
+          command: () => this.openWalletEditor(wallet.id)
+        },
+        {
+          label: 'Удалить',
+          icon: 'pi pi-trash',
+          command: () => this.deleteWallet(wallet.id)
+        }
+      ];
+    },
     async loadWallets() {
       this.loading = true;
       const result = await this.walletUseCase.getUserWallets();
@@ -127,12 +170,24 @@ export default {
       this.walletEditorModal.walletId = walletId;
       this.walletEditorModal.show = true;
     },
-    showWalletDetail(walletId) {
-      console.log('showWalletDetail', walletId);
-    },
     deleteWallet(walletId) {
       this.deleteWalletModal.walletId = walletId;
-      this.deleteWalletModal.show = true;
+      // this.deleteWalletModal.show = true;
+
+      this.$confirm.require({
+        message: 'Подтвердите удаление кошелька',
+        header: 'Подтверждение удаления',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: 'Да',
+        rejectLabel: 'Отмена',
+        accept: () => {
+          this.makeDeleteWallet();
+        },
+        reject: () => {},
+        acceptClass: 'p-button-text p-button-danger p-button-sm',
+        rejectClass: 'p-button-text p-button-secondary p-button-sm'
+      });
+
     },
     cancelDelation() {
       this.deleteWalletModal.show = false;

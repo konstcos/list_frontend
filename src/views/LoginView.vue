@@ -3,61 +3,64 @@
     <div v-if="section === sections.login">
       <div class="login_title">
         Вход
-        <v-btn
+        <Button
+          label="Зарегистрироваться"
+          class="!px-2 !py-1 !text-xs !h-7"
           size="small"
           @click="changeSection(sections.registration)"
+          severity="contrast"
           :disabled="loading"
-        >
-          Зарегистрироваться
-        </v-btn>
+        />
       </div>
       <div>
-        <v-card
-          color="indigo"
-          variant="outlined"
+        <Card
         >
 
-          <v-card-text class="pt-6">
-            <v-form>
-              <v-text-field
+          <template #content>
+            <div class="flex flex-col gap-1">
+              <InputText
                 v-model="login.email"
-                label="Email"
-                density="compact"
+                type="text"
                 required
+                placeholder="email"
                 :disabled="loading"
-              ></v-text-field>
-              <v-text-field
+                fluid />
+            </div>
+
+            <div class="flex flex-col gap-1 mt-4">
+              <Password
                 v-model="login.password"
-                label="Пароль"
-                type="password"
-                density="compact"
                 required
-                :disabled="loading"
-              ></v-text-field>
-              <v-btn
-                color="primary"
                 size="small"
+                :disabled="loading"
+                :feedback="false"
+                placeholder="password"
+                fluid />
+            </div>
+
+              <Button
+                label="Войти"
+                class="!px-2 !py-1 !text-xs !h-7 mt-4"
                 @click="loginUser"
                 :loading="loading"
-              >Войти
-              </v-btn>
-            </v-form>
-
-          </v-card-text>
-        </v-card>
+                :disabled="loading"
+              />
+          </template>
+        </Card>
 
       </div>
     </div>
     <div v-else>
       <div class="login_title">
         Регистрация
-        <v-btn
+        <Button
+          label="Войти"
+          class="!px-2 !py-1 !text-xs !h-7"
           size="small"
           @click="changeSection(sections.login)"
+          severity="contrast"
           :disabled="loading"
-        >
-          Войти
-        </v-btn>
+        />
       </div>
       <div>
         <v-card
@@ -65,32 +68,51 @@
           variant="outlined"
         >
 
-          <v-card-text class="pt-6">
-            <v-form>
-              <v-text-field
-                v-model="registration.name"
-                label="Name"
-                density="compact"
-                type="text"
-                required
-                :disabled="loading"
-              ></v-text-field>
-              <v-text-field
-                v-model="registration.email"
-                label="Email"
-                type="email"
-                density="compact"
-                required
-                :disabled="loading"
-              ></v-text-field>
-              <v-text-field
-                v-model="registration.password"
-                label="Пароль"
-                density="compact"
-                type="password"
-                required
-                :disabled="loading"
-              ></v-text-field>
+          <Card>
+            <template #content>
+              <div class="flex flex-col gap-1">
+                <InputText
+                  v-model="registration.name"
+                  type="text"
+                  required
+                  placeholder="name"
+                  :disabled="loading"
+                  fluid />
+              </div>
+
+              <div class="flex flex-col gap-1 mt-4">
+                <InputText
+                  v-model="registration.email"
+                  type="text"
+                  required
+                  placeholder="email"
+                  :disabled="loading"
+                  fluid />
+              </div>
+
+
+              <div class="flex flex-col gap-1 mt-4">
+                <Password
+                  v-model="registration.password"
+                  required
+                  size="small"
+                  :disabled="loading"
+                  :feedback="false"
+                  placeholder="password"
+                  fluid />
+              </div>
+
+              <div class="flex flex-col gap-1 mt-4">
+                <Password
+                  v-model="registration.passwordConfirmation"
+                  required
+                  size="small"
+                  :disabled="loading"
+                  :feedback="false"
+                  placeholder="Подтверждение пароля"
+                  fluid />
+              </div>
+
               <v-text-field
                 v-model="registration.passwordConfirmation"
                 label="Подтверждение пароля"
@@ -104,16 +126,16 @@
                 {{ error }}
               </div>
 
-              <v-btn
-                color="primary"
-                size="small"
+              <Button
+                label="Зарегистрироваться"
+                class="!px-2 !py-1 !text-xs !h-7 mt-4"
                 @click="registerUser"
                 :loading="loading"
-              >Зарегистрироваться
-              </v-btn>
-            </v-form>
+                :disabled="loading"
+              />
 
-          </v-card-text>
+            </template>
+          </Card>
         </v-card>
       </div>
     </div>

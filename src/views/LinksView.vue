@@ -1,71 +1,74 @@
 <template>
   <div>
     <h1>Каталог ссылок</h1>
-    <div class="mt-4">
+    <div class="mt-4 ">
 
-      <v-row>
-        <v-col>
-          <v-text-field
-            density="compact"
+      <div class="flex flex-wrap -mx-2 mb-6">
+        <div class="w-full md:w-1/2 px-2">
+          <InputText
             v-model="newLink"
-          ></v-text-field>
-        </v-col>
-        <v-col>
-          <v-btn
+            type="text"
+            required
+            placeholder="link"
+            fluid />
+        </div>
+        <div class="w-full md:w-1/2 px-2">
+          <Button
+            label="Сохранить"
             size="small"
             @click="saveLink()"
-            color="primary"
-          >
-            Сохранить
-          </v-btn>
-          <v-btn
+          />
+
+          <Button
+            label="Очистить"
             class="ml-2"
             size="small"
+            severity="secondary"
             @click="newLink = null"
-          >
-            Очистить
-          </v-btn>
-        </v-col>
-      </v-row>
+          />
+        </div>
+      </div>
 
 
 
-      <div v-if="loading">
+      <div v-if="loading" class="mb-4">
         Загрузка...
       </div>
 
       <div>
         <div v-for="link in links" :key="link.id">
-          <v-row>
-            <v-col>
+          <div class="flex flex-wrap mb-2">
+            <div>
               <div class="link-id">
                 {{ link.id }}
               </div>
 
               <a class="" :href="link.link" target="_blank">{{ link.link }}</a>
 
-              <v-btn
-                class="ml-3"
-                size="x-small"
+              <Button
+                v-if="!loading"
+                class="!px-2 !py-1 !text-xs !h-7 ml-3"
                 @click="openLinkEditor(link)"
                 :disabled="loading"
-                density="compact"
+                icon="pi pi-pencil"
+                severity="info"
                 variant="text"
-                icon="mdi:mdi-pencil">
-              </v-btn>
+                rounded
+              />
 
-              <v-btn
-                class="ml-3"
-                size="x-small"
+              <Button
+                v-if="!loading"
+                class="!px-2 !py-1 !text-xs !h-7"
                 @click="openDeleteLinkModal(link)"
                 :disabled="loading"
-                density="compact"
+                icon="pi pi-times"
+                severity="danger"
                 variant="text"
-                icon="mdi:mdi-delete">
-              </v-btn>
+                rounded
+              />
 
-            </v-col>
-          </v-row>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -73,27 +76,13 @@
 
     <LinkEditor v-model="linkEditorModal.show" :link="linkEditorModal.link" @reload="loadLinks()"/>
 
-    <v-dialog v-model="deleteLinkModal.show" max-width="500px" @click="deleteLinkModal.show = false">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Удаление линка</span>
-        </v-card-title>
-        <v-card-text>
-          <div>
-            Уверены что хотите удалить линк?
-          </div>
-
-        </v-card-text>
-
-        <v-card-actions>
-          <v-btn density="compact" color="primary" @click="deleteLinkModal.show = false">Закрыть</v-btn>
-
-          <v-spacer></v-spacer>
-          <v-btn density="compact" color="error" @click="deleteLink">Удалить</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
+    <Dialog v-model:visible="deleteLinkModal.show" modal header="Удаление линка" :style="{ width: '25rem' }">
+      <span class="text-surface-500 dark:text-surface-400 block mb-8">Уверены что хотите удалить линк?</span>
+      <div class="flex justify-end gap-2">
+        <Button type="button" label="Отмена" size="small" severity="secondary" @click="deleteLinkModal.show = false"></Button>
+        <Button type="button" label="Удалить" size="small" severity="danger" @click="deleteLink"></Button>
+      </div>
+    </Dialog>
   </div>
 </template>
 
@@ -132,8 +121,6 @@ export default {
         return false;
       }
 
-
-
       await this.linksUseCase.saveLink(new LinkEntity({
         id: 0,
         link: this.newLink
@@ -162,7 +149,7 @@ export default {
       }
 
       await this.linksUseCase.deleteLink(this.deleteLinkModal.link);
-
+      this.deleteLinkModal.show = false;
       this.loadLinks();
     },
   },
