@@ -33,19 +33,19 @@ export default class TaxonomyCategoryUseCase {
 
     async saveCategory(category) {
         try {
-            return await this.taxonomyCategoryRepository .saveCategory(category);
+            return await this.taxonomyCategoryRepository.saveCategory(category);
         } catch (error) {
             return false;
         }
     }
 
 
-    async deleteLink(link) {
-        // try {
-        //     return await this.linksRepository.deleteLink(link);
-        // } catch (error) {
-        //     return false;
-        // }
+    async deleteCategory(categoryId) {
+        try {
+            return await this.taxonomyCategoryRepository.deleteCategory(categoryId);
+        } catch (error) {
+            return false;
+        }
     }
 
 

@@ -3,32 +3,46 @@
     <h1>Каталог ссылок</h1>
     <div class="mt-4 ">
 
-      <div class="flex flex-wrap -mx-2 mb-6">
-        <div class="w-full md:w-1/2 px-2">
-          <InputText
-            v-model="newLink"
-            type="text"
-            required
-            placeholder="link"
-            fluid />
-        </div>
-        <div class="w-full md:w-1/2 px-2">
-          <Button
-            label="Сохранить"
-            size="small"
-            @click="saveLink()"
-          />
+      <div class="mb-4">
+        <div class="flex flex-wrap -mx-2">
+          <div class="w-full md:w-1/2 px-2">
+            <InputText
+              v-model="newLink"
+              type="text"
+              required
+              placeholder="link"
+              fluid />
+          </div>
+          <div class="w-full md:w-1/2 px-2">
+            <Button
+              label="Сохранить"
+              size="small"
+              :loading="loading"
+              @click="saveLink()"
+            />
 
-          <Button
-            label="Очистить"
-            class="ml-2"
-            size="small"
-            severity="secondary"
-            @click="newLink = null"
-          />
+            <Button
+              label="Очистить"
+              class="ml-2"
+              size="small"
+              severity="secondary"
+              @click="clearNewLink()"
+            />
+          </div>
+        </div>
+
+        <div v-if="errorType === 'wrong_url_format'" class="wrong-url-format mt-2 ml-1 mb-4">
+          не правильный формат линка
+        </div>
+
+        <div v-if="errorType === 'unknown_error'" class="wrong-url-format mt-2 ml-1 mb-4">
+          не известная ошибка при сохранении, попробуйте позже
+        </div>
+
+        <div v-if="errorType === 'link_already_exists'" class="wrong-url-format mt-2 ml-1 mb-4">
+          Точно такой же линк уже существует в системе
         </div>
       </div>
-
 
 
       <div v-if="loading" class="mb-4">
@@ -72,6 +86,10 @@
         </div>
       </div>
 
+      <div v-if="!loading && links.length === 0" class="mb-4">
+        Ссылок пока нет
+      </div>
+
     </div>
 
     <LinkEditor v-model="linkEditorModal.show" :link="linkEditorModal.link" @reload="loadLinks()"/>
@@ -104,6 +122,7 @@ export default {
     return {
       links: [],
       loading: false,
+      errorType: null,
       newLink: null,
       linkEditorModal: {
         show: false,
@@ -116,15 +135,42 @@ export default {
     }
   },
   methods: {
+
+    clearNewLink() {
+      this.newLink = null;
+      this.errorType = null;
+    },
+
     async saveLink() {
       if (this.newLink && this.newLink.trim().length === 0) {
         return false;
       }
 
-      await this.linksUseCase.saveLink(new LinkEntity({
+      this.errorType = null;
+      this.loading = true;
+
+      const result = await this.linksUseCase.saveLink(new LinkEntity({
         id: 0,
         link: this.newLink
       }));
+
+      this.loading = false;
+
+      if (result.status === 'fail') {
+
+
+
+        if (result.info === 'wrong_url_format') {
+          this.errorType = 'wrong_url_format';
+        } else if(result.info === 'link_already_exists') {
+          this.errorType = 'link_already_exists';
+        } else {
+          this.errorType = 'unknown_error';
+        }
+
+        return false;
+      }
+
       this.newLink = null;
 
       this.loadLinks();
@@ -165,6 +211,10 @@ export default {
 .link-id {
   width: 30px;
   display: inline-block;
+}
+
+.wrong-url-format {
+  color: #ff8c8c;
 }
 
 </style>

@@ -17,12 +17,12 @@ export default {
     return result.data;
   },
 
-  // async deleteLink(link) {
-  //   const result =  await axios.post('links/delete-link', {
-  //     link_id: link.id,
-  //   });
-  //   return result.data;
-  // },
+  async deleteCategory(categoryId) {
+    const result =  await axios.post('taxonomy/categories/delete-category', {
+      category_id: categoryId
+    });
+    return result.data;
+  },
 
 
 }

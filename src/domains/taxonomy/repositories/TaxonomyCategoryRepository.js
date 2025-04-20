@@ -18,12 +18,12 @@ export default class TaxonomyCategoryRepository {
     }
   }
 
-  async deleteLink(link) {
-    // try {
-    //   return await linksApi.deleteLink(link);
-    // } catch (error) {
-    //   return false;
-    // }
+  async deleteCategory(categoryId) {
+    try {
+      return await taxonomyApi.deleteCategory(categoryId);
+    } catch (error) {
+      return false;
+    }
   }
 
 }

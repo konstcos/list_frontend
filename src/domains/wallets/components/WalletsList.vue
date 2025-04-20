@@ -59,7 +59,6 @@
               </li>
             </ul>
 
-            <!-- Один‑единственный OverlayPanel -->
             <Popover ref="op">
               <div style="display: flex; flex-direction: column; gap: 8px; width: 150px">
                 <Button
@@ -172,7 +171,6 @@ export default {
     },
     deleteWallet(walletId) {
       this.deleteWalletModal.walletId = walletId;
-      // this.deleteWalletModal.show = true;
 
       this.$confirm.require({
         message: 'Подтвердите удаление кошелька',
