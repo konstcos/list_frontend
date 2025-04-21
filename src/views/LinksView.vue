@@ -1,95 +1,147 @@
 <template>
   <div>
     <h1>Каталог ссылок</h1>
-    <div class="mt-4 ">
 
-      <div class="mb-4">
-        <div class="flex flex-wrap -mx-2">
-          <div class="w-full md:w-1/2 px-2">
-            <InputText
-              v-model="newLink"
-              type="text"
-              required
-              placeholder="link"
-              fluid />
-          </div>
-          <div class="w-full md:w-1/2 px-2">
-            <Button
-              label="Сохранить"
-              size="small"
-              :loading="loading"
-              @click="saveLink()"
-            />
+    <div class="flex flex-1 overflow-hidden mt-4">
 
-            <Button
-              label="Очистить"
-              class="ml-2"
-              size="small"
-              severity="secondary"
-              @click="clearNewLink()"
-            />
-          </div>
-        </div>
+      <aside class="w-64 overflow-y-auto">
+        тут пока пусто потому что нет ни одной категории
+      </aside>
 
-        <div v-if="errorType === 'wrong_url_format'" class="wrong-url-format mt-2 ml-1 mb-4">
-          не правильный формат линка
-        </div>
-
-        <div v-if="errorType === 'unknown_error'" class="wrong-url-format mt-2 ml-1 mb-4">
-          не известная ошибка при сохранении, попробуйте позже
-        </div>
-
-        <div v-if="errorType === 'link_already_exists'" class="wrong-url-format mt-2 ml-1 mb-4">
-          Точно такой же линк уже существует в системе
-        </div>
-      </div>
-
-
-      <div v-if="loading" class="mb-4">
-        Загрузка...
-      </div>
-
-      <div>
-        <div v-for="link in links" :key="link.id">
-          <div class="flex flex-wrap mb-2">
-            <div>
-              <div class="link-id">
-                {{ link.id }}
-              </div>
-
-              <a class="" :href="link.link" target="_blank">{{ link.link }}</a>
-
+      <div class="flex-1 ml-4 mr-4 overflow-y-auto">
+        <div class="mb-4">
+          <div class="flex flex-wrap -mx-2">
+            <div class="w-full md:w-2/3 px-2">
+              <InputText
+                v-model="newLink"
+                type="text"
+                required
+                placeholder="link"
+                fluid />
+            </div>
+            <div class="w-full md:w-1/3 px-2">
               <Button
-                v-if="!loading"
-                class="!px-2 !py-1 !text-xs !h-7 ml-3"
-                @click="openLinkEditor(link)"
-                :disabled="loading"
-                icon="pi pi-pencil"
-                severity="info"
-                variant="text"
-                rounded
+                label="Сохранить"
+                size="small"
+                :loading="loading"
+                @click="saveLink()"
               />
 
               <Button
-                v-if="!loading"
-                class="!px-2 !py-1 !text-xs !h-7"
-                @click="openDeleteLinkModal(link)"
-                :disabled="loading"
-                icon="pi pi-times"
-                severity="danger"
-                variant="text"
-                rounded
+                label="Очистить"
+                class="ml-2"
+                size="small"
+                severity="secondary"
+                @click="clearNewLink()"
               />
+            </div>
+          </div>
+
+          <div v-if="errorType === 'wrong_url_format'" class="wrong-url-format mt-2 ml-1 mb-4">
+            не правильный формат линка
+          </div>
+
+          <div v-if="errorType === 'unknown_error'" class="wrong-url-format mt-2 ml-1 mb-4">
+            не известная ошибка при сохранении, попробуйте позже
+          </div>
+
+          <div v-if="errorType === 'link_already_exists'" class="wrong-url-format mt-2 ml-1 mb-4">
+            Точно такой же линк уже существует в системе
+          </div>
+        </div>
+
+        <div v-if="loading" class="mb-4">
+          Загрузка...
+        </div>
+
+        <div>
+
+          <div v-for="link in links" :key="link.id">
+            <div class="flex flex-wrap mb-2">
+              <Card class="w-full relative ">
+
+
+                <template #content>
+                  <div class="absolute top-2 right-2 flex space-x-0">
+                    <Button
+                            v-if="!loading"
+                            class="!text-xs"
+                            @click="openLinkEditor(link)"
+                            :disabled="loading"
+                            icon="pi pi-pencil"
+                            severity="info"
+                            variant="text"
+                            rounded
+                    />
+                    <Button
+                            v-if="!loading"
+                            class="!text-xs"
+                            @click="openDeleteLinkModal(link)"
+                            :disabled="loading"
+                            icon="pi pi-trash"
+                            severity="danger"
+                            variant="text"
+                            rounded
+                    />
+                  </div>
+                  <div class="absolute bottom-2 right-5 flex space-x-0">
+                    <span class="link-id text-gray-900 dark:text-gray-600 text-xs">
+                        # {{ link.id }}
+                      </span>
+                  </div>
+
+                  <div>
+                    <div class="mb-2">
+                      <div class="flex text-gray-900 dark:text-gray-800 text-xs">
+                        <div class="bg-gray-900 dark:bg-gray-400 pl-2 pr-2 py-0 rounded-2xl cursor-pointer">
+                          Development / Python / FlaskAPI
+                        </div>
+
+                        <span class="text-gray-900 dark:text-gray-200 text-xs mx-1">•</span>
+
+                        <div class="bg-gray-900 dark:bg-gray-400 pl-2 pr-2 py-0 rounded-2xl cursor-pointer">
+                          AI / Stable Diffusion
+                        </div>
+
+                        <span class="text-gray-900 dark:text-gray-200 text-xs mx-1">•</span>
+
+                        <div class="bg-gray-900 dark:bg-gray-400 pl-2 pr-2 py-0 rounded-2xl cursor-pointer">
+                          Design / Gimp
+                        </div>
+
+                      </div>
+                    </div>
+
+
+                    <a class="" :href="link.link" target="_blank">{{ link.link }}</a>
+
+
+                    <div class="flex flex-wrap gap-2 mt-3">
+                      <Tag value="Primary" class="!text-[10px]"></Tag>
+                      <Tag severity="secondary" value="Secondary" class="!text-[10px]"></Tag>
+                      <Tag severity="success" value="Success" class="!text-[10px]"></Tag>
+                      <Tag severity="info" value="Info" class="!text-[10px]"></Tag>
+                      <Tag severity="warn" value="Warn" class="!text-[10px]"></Tag>
+                      <Tag severity="danger" value="Danger" class="!text-[10px]"></Tag>
+                      <Tag severity="contrast" value="Contrast" class="!text-[10px]"></Tag>
+                    </div>
+
+                  </div>
+                </template>
+              </Card>
 
             </div>
           </div>
         </div>
+
+        <div v-if="!loading && links.length === 0" class="mb-4">
+          Ссылок пока нет
+        </div>
       </div>
 
-      <div v-if="!loading && links.length === 0" class="mb-4">
-        Ссылок пока нет
-      </div>
-
+      <aside class="w-64 overflow-y-auto">
+        Нет ни одного тега
+      </aside>
     </div>
 
     <LinkEditor v-model="linkEditorModal.show" :link="linkEditorModal.link" @reload="loadLinks()"/>
@@ -208,10 +260,9 @@ export default {
 
 <style scoped lang="scss">
 
-.link-id {
-  width: 30px;
-  display: inline-block;
-}
+//.link-id {
+//  width: 40px;
+//}
 
 .wrong-url-format {
   color: #ff8c8c;
