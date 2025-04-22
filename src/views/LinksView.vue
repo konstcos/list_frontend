@@ -92,20 +92,29 @@
 
                   <div>
                     <div class="mb-2">
-                      <div class="flex text-gray-900 dark:text-gray-800 text-xs">
-                        <div class="bg-gray-900 dark:bg-gray-400 pl-2 pr-2 py-0 rounded-2xl cursor-pointer">
+                      <div class="flex text-gray-900 dark:text-gray-500 text-xs">
+                        <div
+                          @click="openCategoriesEditor(link)"
+                          class="bg-gray-900 dark:bg-zinc-950 pl-2 pr-2 py-0 rounded-2xl cursor-pointer"
+                        >
                           Development / Python / FlaskAPI
                         </div>
 
                         <span class="text-gray-900 dark:text-gray-200 text-xs mx-1">•</span>
 
-                        <div class="bg-gray-900 dark:bg-gray-400 pl-2 pr-2 py-0 rounded-2xl cursor-pointer">
+                        <div
+                          @click="openCategoriesEditor(link)"
+                          class="bg-gray-900 dark:bg-zinc-950 pl-2 pr-2 py-0 rounded-2xl cursor-pointer"
+                        >
                           AI / Stable Diffusion
                         </div>
 
                         <span class="text-gray-900 dark:text-gray-200 text-xs mx-1">•</span>
 
-                        <div class="bg-gray-900 dark:bg-gray-400 pl-2 pr-2 py-0 rounded-2xl cursor-pointer">
+                        <div
+                          @click="openCategoriesEditor(link)"
+                          class="bg-gray-900 dark:bg-zinc-950 pl-2 pr-2 py-0 rounded-2xl cursor-pointer"
+                        >
                           Design / Gimp
                         </div>
 
@@ -145,6 +154,7 @@
     </div>
 
     <LinkEditor v-model="linkEditorModal.show" :link="linkEditorModal.link" @reload="loadLinks()"/>
+    <MaterialCategories v-model="categoriesEditorModal.show" :link="categoriesEditorModal.categories" :material-name="categoriesEditorModal.materialName" @reload="loadLinks()"/>
 
     <Dialog v-model:visible="deleteLinkModal.show" modal header="Удаление линка" :style="{ width: '25rem' }">
       <span class="text-surface-500 dark:text-surface-400 block mb-8">Уверены что хотите удалить линк?</span>
@@ -160,11 +170,13 @@
 import LinksUseCase from "../domains/links/use_case/LinksUseCase.js";
 import LinkEditor from "../domains/links/components/LinkEditor.vue";
 import LinkEntity from "../domains/links/entities/LinkEntity.js";
+import MaterialCategories from "../domains/taxonomy/components/MaterialCategories.vue";
 
 export default {
   name: "Links",
   components: {
-    LinkEditor
+    LinkEditor,
+    MaterialCategories,
   },
   setup() {
     const linksUseCase = new LinksUseCase();
@@ -178,7 +190,12 @@ export default {
       newLink: null,
       linkEditorModal: {
         show: false,
-        link: {}
+        link: {},
+      },
+      categoriesEditorModal: {
+        show: false,
+        categories: [],
+        materialName: null,
       },
       deleteLinkModal: {
         show: false,
@@ -231,6 +248,16 @@ export default {
       this.linkEditorModal.link = link || new LinkEntity();
 
       this.linkEditorModal.show = true;
+    },
+    openCategoriesEditor(link) {
+
+      this.categoriesEditorModal.materialName = link.link;
+      this.categoriesEditorModal.categories = link.link;
+
+      console.log('openCategoriesEditor', link);
+
+
+      this.categoriesEditorModal.show = true;
     },
     async loadLinks() {
       this.loading = true;

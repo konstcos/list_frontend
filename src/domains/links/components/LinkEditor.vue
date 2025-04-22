@@ -81,7 +81,7 @@ export default {
     },
 
     /**
-     * Сохраняет кошелек.
+     * Сохранение
      */
     async saveLink() {
       // console.log('saveLink');
@@ -97,7 +97,7 @@ export default {
     },
 
     /**
-     * Очищает данные кошелька.
+     * Очищает данные
      */
     clearLinkData() {
       this.linkEditor = {
@@ -105,30 +105,6 @@ export default {
         link: ''
       };
     },
-
-    // async getLinkData() {
-    //     this.link = null;
-    //     this.loading = true;
-    //
-    //     // const result = await this.walletUseCase.getWalletDetail(this.walletId);
-    //     // if (result === false) {
-    //     //     alert('Ошибка при загрузке данных кошелька');
-    //     // } else {
-    //     //     this.wallet = result;
-    //     // }
-    //
-    //     this.loading = false;
-    // },
-
-    // loadWalletData() {
-    //     if (this.walletId === 0) {
-    //         this.link = new LinkEntity();
-    //         this.loading = false;
-    //     } else {
-    //         this.getLinkData();
-    //     }
-    // }
-
   }
 }
 </script>
