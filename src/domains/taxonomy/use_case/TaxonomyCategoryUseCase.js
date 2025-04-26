@@ -48,6 +48,22 @@ export default class TaxonomyCategoryUseCase {
         }
     }
 
+    async bindMaterial(data) {
+        try {
+            return await this.taxonomyCategoryRepository.bindMaterial(data);
+        } catch (error) {
+            return false;
+        }
+    }
+
+    async receiveCategories() {
+        try {
+            return await this.taxonomyCategoryRepository.receiveCategories();
+        } catch (error) {
+            return false;
+        }
+    }
+
 
 
 }

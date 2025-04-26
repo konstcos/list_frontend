@@ -24,5 +24,21 @@ export default {
     return result.data;
   },
 
+  async bindMaterial(data) {
+    const result =  await axios.post('taxonomy/categories/bind-material', {
+      material_id: data.materialId,
+      primary_id: data.primaryCategoryId,
+      category1_id: data.category1Id,
+      category2_id: data.category2Id,
+      category3_id: data.category3Id,
+    });
+    return result.data;
+  },
+
+  async receiveCategories() {
+    const result =  await axios.post('taxonomy/categories/receive-category', {});
+    return result.data;
+  },
+
 
 }

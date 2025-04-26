@@ -93,30 +93,46 @@
                   <div>
                     <div class="mb-2">
                       <div class="flex text-gray-900 dark:text-gray-500 text-xs">
+
+
                         <div
+                          v-if="link.categories.length === 0"
                           @click="openCategoriesEditor(link)"
                           class="bg-gray-900 dark:bg-zinc-950 pl-2 pr-2 py-0 rounded-2xl cursor-pointer"
                         >
-                          Development / Python / FlaskAPI
+                          пусто
                         </div>
 
-                        <span class="text-gray-900 dark:text-gray-200 text-xs mx-1">•</span>
+                        <template v-for="(category, key) in link.categories" :key="category.id">
 
-                        <div
-                          @click="openCategoriesEditor(link)"
-                          class="bg-gray-900 dark:bg-zinc-950 pl-2 pr-2 py-0 rounded-2xl cursor-pointer"
-                        >
-                          AI / Stable Diffusion
-                        </div>
+                          <span v-if="key > 0" class="text-gray-900 dark:text-gray-200 text-xs mx-1">•</span>
 
-                        <span class="text-gray-900 dark:text-gray-200 text-xs mx-1">•</span>
+                          <div
+                            @click="openCategoriesEditor(link)"
+                            class="bg-gray-900 dark:bg-zinc-950 pl-2 pr-2 py-0 rounded-2xl cursor-pointer"
+                          >
+                            {{ category.title }}
+                          </div>
 
-                        <div
-                          @click="openCategoriesEditor(link)"
-                          class="bg-gray-900 dark:bg-zinc-950 pl-2 pr-2 py-0 rounded-2xl cursor-pointer"
-                        >
-                          Design / Gimp
-                        </div>
+                        </template>
+
+<!--                        <span class="text-gray-900 dark:text-gray-200 text-xs mx-1">•</span>-->
+
+<!--                        <div-->
+<!--                          @click="openCategoriesEditor(link)"-->
+<!--                          class="bg-gray-900 dark:bg-zinc-950 pl-2 pr-2 py-0 rounded-2xl cursor-pointer"-->
+<!--                        >-->
+<!--                          AI / Stable Diffusion-->
+<!--                        </div>-->
+
+<!--                        <span class="text-gray-900 dark:text-gray-200 text-xs mx-1">•</span>-->
+
+<!--                        <div-->
+<!--                          @click="openCategoriesEditor(link)"-->
+<!--                          class="bg-gray-900 dark:bg-zinc-950 pl-2 pr-2 py-0 rounded-2xl cursor-pointer"-->
+<!--                        >-->
+<!--                          Design / Gimp-->
+<!--                        </div>-->
 
                       </div>
                     </div>
@@ -154,7 +170,17 @@
     </div>
 
     <LinkEditor v-model="linkEditorModal.show" :link="linkEditorModal.link" @reload="loadLinks()"/>
-    <MaterialCategories v-model="categoriesEditorModal.show" :link="categoriesEditorModal.categories" :material-name="categoriesEditorModal.materialName" @reload="loadLinks()"/>
+    <MaterialCategories
+      v-model="categoriesEditorModal.show"
+      material-module="links"
+      :material-id="categoriesEditorModal.materialId"
+      :material-name="categoriesEditorModal.materialName"
+      :primary-category-id="categoriesEditorModal.primaryCategoryId"
+      :first-category-id="categoriesEditorModal.firstCategoryId"
+      :second-category-id="categoriesEditorModal.secondCategoryId"
+      :third-category-id="categoriesEditorModal.thirdCategoryId"
+      @reload="loadLinks()"
+    />
 
     <Dialog v-model:visible="deleteLinkModal.show" modal header="Удаление линка" :style="{ width: '25rem' }">
       <span class="text-surface-500 dark:text-surface-400 block mb-8">Уверены что хотите удалить линк?</span>
@@ -194,7 +220,11 @@ export default {
       },
       categoriesEditorModal: {
         show: false,
-        categories: [],
+        materialId: null,
+        primaryCategoryId: null,
+        firstCategoryId: null,
+        secondCategoryId: null,
+        thirdCategoryId: null,
         materialName: null,
       },
       deleteLinkModal: {
@@ -244,18 +274,39 @@ export default {
 
       this.loadLinks();
     },
+
     openLinkEditor(link = null) {
       this.linkEditorModal.link = link || new LinkEntity();
 
       this.linkEditorModal.show = true;
     },
+
     openCategoriesEditor(link) {
 
+      this.categoriesEditorModal.materialId = link.id;
       this.categoriesEditorModal.materialName = link.link;
-      this.categoriesEditorModal.categories = link.link;
 
-      console.log('openCategoriesEditor', link);
+      this.categoriesEditorModal.primaryCategoryId = null;
+      this.categoriesEditorModal.firstCategoryId = null;
+      this.categoriesEditorModal.secondCategoryId = null;
+      this.categoriesEditorModal.thirdCategoryId = null;
 
+        let i = 0;
+      for (let category of link.categories) {
+        if (category.is_primary) {
+          this.categoriesEditorModal.primaryCategoryId = category.id;
+        }
+
+        if (i === 0) {
+          this.categoriesEditorModal.firstCategoryId = category.id;
+        } else if (i === 1) {
+          this.categoriesEditorModal.secondCategoryId = category.id;
+        } else if (i === 2) {
+          this.categoriesEditorModal.thirdCategoryId = category.id;
+        }
+
+        i++;
+      }
 
       this.categoriesEditorModal.show = true;
     },

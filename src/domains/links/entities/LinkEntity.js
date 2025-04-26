@@ -8,6 +8,7 @@ export default class LinkEntity {
     constructor(data = {}) {
         this.id = data.id ?? 0;
         this.link = data.link ?? '';
+        this.categories = data.categories ?? [];
     }
 
     clear() {

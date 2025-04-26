@@ -16,6 +16,7 @@ export default class LinksUseCase {
                     links.push(new LinkEntity({
                         id: link.id,
                         link: link.link,
+                        categories: link.categories,
                     }));
                 }
 

@@ -26,4 +26,20 @@ export default class TaxonomyCategoryRepository {
     }
   }
 
+  async bindMaterial(data) {
+    try {
+      return await taxonomyApi.bindMaterial(data);
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async receiveCategories() {
+    try {
+      return await taxonomyApi.receiveCategories();
+    } catch (error) {
+      return false;
+    }
+  }
+
 }

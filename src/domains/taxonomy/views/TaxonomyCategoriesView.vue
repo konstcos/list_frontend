@@ -116,8 +116,7 @@
 <script>
 import TaxonomyCategoryUseCase from "../use_case/TaxonomyCategoryUseCase.js";
 import TaxonomyCategoryEditor from "../components/TaxonomyCategoryEditor.vue";
-// import LinkEditor from "~/src/domains/links/components/LinkEditor.vue";
-// import LinkEntity from "~/src/domains/links/entities/LinkEntity.js";
+
 export default {
   name: "TaxonomyCategoriesView",
   setup() {
