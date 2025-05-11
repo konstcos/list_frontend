@@ -1,7 +1,7 @@
 import {createRouter, createWebHistory} from "vue-router";
 import useUser from "../entities/UserEntity";
 
-const {isLoggedIn} = useUser();
+const {isLoggedIn, isLoginProcessed} = useUser();
 
 const routes = [
   {
@@ -48,6 +48,10 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+
+  if (!isLoginProcessed()) {
+    return next();
+  }
 
   if (isLoggedIn()) {
     if (to.name === 'login') {

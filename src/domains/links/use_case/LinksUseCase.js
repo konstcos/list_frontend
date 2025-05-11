@@ -7,9 +7,9 @@ export default class LinksUseCase {
         this.linksRepository = new LinksRepository();
     }
 
-    async getUserLinks() {
+    async getUserLinks(page, categories) {
         try {
-            const result = await this.linksRepository.getUserLinks();
+            const result = await this.linksRepository.getUserLinks(page, categories);
             if (result['status'] === 'success') {
                 let links = [];
                 for(let link of result['data']['links']) {

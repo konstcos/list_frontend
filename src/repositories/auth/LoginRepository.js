@@ -2,7 +2,7 @@ import useUser from "../../entities/UserEntity.js";
 import api from "../../api/auth.js";
 import userApi from "../../api/user.js";
 
-const {setUser, setToken, setLogged, clearUser} = useUser();
+const {setUser, setToken, setLogged, clearUser, setLoginProcessed} = useUser();
 
 
 export default class LoginRepository {
@@ -16,6 +16,7 @@ export default class LoginRepository {
       if (getUserResult['status'] === 'success') {
         setUser(getUserResult.data.user);
         setLogged(true);
+        setLoginProcessed(true);
         return true;
       }
     } catch (error) {
@@ -48,6 +49,7 @@ export default class LoginRepository {
       if (result['status'] === 'success') {
         setUser(result.data.user);
         setLogged(true);
+        setLoginProcessed(true);
         return true;
       }
     } catch (error) {

@@ -36,7 +36,17 @@
 
       <!-- Контент -->
       <main class="flex-1  overflow-y-auto">
-        <router-view />
+        <div v-if="!isLoginProcessed()" class="mt-20 px-30">
+          <ProgressBar color="info"
+                       mode="indeterminate"
+                       style="height: 4px;"
+                       :pt="{ value: { style: { backgroundColor: '#38bdf9' } } }"
+          ></ProgressBar>
+        </div>
+        <div v-else>
+          <router-view />
+        </div>
+
       </main>
     </div>
 
@@ -52,10 +62,11 @@ import LoginRepository from "./repositories/auth/LoginRepository.js";
 export default {
   name: 'App',
   setup() {
-    const {isLoggedIn, user} = useUser();
+    const {isLoggedIn, user, isLoginProcessed} = useUser();
     const loginRepository = new LoginRepository();
     return {
       isLoggedIn,
+      isLoginProcessed,
       loginRepository,
       user,
     };
@@ -82,7 +93,6 @@ export default {
   },
   methods: {
     toggleDrawer() {
-      console.log('okew drawer')
       this.drawer = !this.drawer
     },
     toggleUserMenu(event) {

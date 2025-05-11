@@ -5,7 +5,7 @@
     <div class="flex flex-1 overflow-hidden mt-4">
 
       <aside class="w-64 overflow-y-auto">
-        тут пока пусто потому что нет ни одной категории
+        <MaterialCategoriesList v-model="selectedCategories"></MaterialCategoriesList>
       </aside>
 
       <div class="flex-1 ml-4 mr-4 overflow-y-auto">
@@ -51,7 +51,11 @@
         </div>
 
         <div v-if="loading" class="mb-4">
-          Загрузка...
+          <ProgressBar color="info"
+                       mode="indeterminate"
+                       style="height: 4px;"
+                       :pt="{ value: { style: { backgroundColor: '#38bdf9' } } }"
+          ></ProgressBar>
         </div>
 
         <div>
@@ -197,12 +201,14 @@ import LinksUseCase from "../domains/links/use_case/LinksUseCase.js";
 import LinkEditor from "../domains/links/components/LinkEditor.vue";
 import LinkEntity from "../domains/links/entities/LinkEntity.js";
 import MaterialCategories from "../domains/taxonomy/components/MaterialCategories.vue";
+import MaterialCategoriesList from "../domains/taxonomy/components/MaterialCategoriesList.vue";
 
 export default {
   name: "Links",
   components: {
     LinkEditor,
     MaterialCategories,
+    MaterialCategoriesList,
   },
   setup() {
     const linksUseCase = new LinksUseCase();
@@ -214,6 +220,7 @@ export default {
       loading: false,
       errorType: null,
       newLink: null,
+      selectedCategories: [],
       linkEditorModal: {
         show: false,
         link: {},
@@ -231,6 +238,7 @@ export default {
         show: false,
         link: null
       },
+      page: 1,
     }
   },
   methods: {
@@ -291,7 +299,7 @@ export default {
       this.categoriesEditorModal.secondCategoryId = null;
       this.categoriesEditorModal.thirdCategoryId = null;
 
-        let i = 0;
+      let i = 0;
       for (let category of link.categories) {
         if (category.is_primary) {
           this.categoriesEditorModal.primaryCategoryId = category.id;
@@ -312,7 +320,7 @@ export default {
     },
     async loadLinks() {
       this.loading = true;
-      this.links = await this.linksUseCase.getUserLinks();
+      this.links = await this.linksUseCase.getUserLinks(this.page, this.selectedCategories);
       this.loading = false;
     },
     openDeleteLinkModal(link) {
@@ -326,6 +334,12 @@ export default {
 
       await this.linksUseCase.deleteLink(this.deleteLinkModal.link);
       this.deleteLinkModal.show = false;
+      this.loadLinks();
+    },
+  },
+  watch: {
+    selectedCategories(newValue) {
+      this.page = 1;
       this.loadLinks();
     },
   },

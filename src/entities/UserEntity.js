@@ -6,6 +6,7 @@ const state = reactive({
     name: null,
     token: null,
     isLoggedIn: false,
+    loginProcessed: false,
   },
 });
 
@@ -32,8 +33,15 @@ export default function useUser() {
     state.user.isLoggedIn = loginState;
   }
 
+  const setLoginProcessed = (loginProcessed = false) => {
+    state.user.loginProcessed = loginProcessed;
+  }
+
   const isLoggedIn = () => {
     return state.user.isLoggedIn;
+  };
+  const isLoginProcessed = () => {
+    return state.user.loginProcessed;
   };
 
   const clearUser = () => {
@@ -54,5 +62,7 @@ export default function useUser() {
     isLoggedIn,
     getToken,
     setLogged,
+    isLoginProcessed,
+    setLoginProcessed,
   };
 }

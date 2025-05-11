@@ -3,8 +3,11 @@ import WalletEntity from '../domains/wallets/entities/WalletEntity.js';
 
 export default {
 
-  async getUseLinks() {
-    const result =  await axios.post('links/user-links', {});
+  async getUseLinks(page, categories) {
+    const result =  await axios.post('links/user-links', {
+      page: page,
+      categories: categories,
+    });
     return result.data;
   },
 

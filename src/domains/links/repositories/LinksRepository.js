@@ -3,9 +3,9 @@ import LinkEntity from '../entities/LinkEntity.js';
 
 
 export default class WalletRepository {
-  async getUserLinks() {
+  async getUserLinks(page, categories) {
     try {
-      return await linksApi.getUseLinks();
+      return await linksApi.getUseLinks(page, categories);
     } catch (error) {
       return false;
     }
