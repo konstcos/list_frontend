@@ -37,8 +37,12 @@ const routes = [
   {
     path: "/categories",
     name: "categories",
-    // component: () => import("../views/CategoriesView.vue"),
     component: () => import("../domains/taxonomy/views/TaxonomyCategoriesView.vue"),
+  },
+  {
+    path: "/tags",
+    name: "tags",
+    component: () => import("../domains/taxonomy/views/TaxonomyTagsView.vue"),
   },
 ];
 

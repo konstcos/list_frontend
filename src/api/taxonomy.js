@@ -41,4 +41,52 @@ export default {
   },
 
 
+
+
+
+
+
+
+
+
+  async getUseTags() {
+    const result =  await axios.post('taxonomy/tags/user-tags', {});
+    return result.data;
+  },
+
+  async saveTag(tag) {
+    const result =  await axios.post('taxonomy/tags/save-tag', {
+      id: tag.id,
+      slug: tag.slug,
+      title: tag.title,
+      description: tag.description,
+      color: tag.color,
+    });
+    return result.data;
+  },
+
+  async deleteTag(tagId) {
+    const result =  await axios.post('taxonomy/tags/delete-tag', {
+      tag_id: tagId
+    });
+    return result.data;
+  },
+
+  async bindTag(data) {
+    const result =  await axios.post('taxonomy/tags/bind-material', {
+      material_id: data.materialId,
+      tag_id: data.category1Id,
+    });
+    return result.data;
+  },
+
+  async receiveTags() {
+    const result =  await axios.post('taxonomy/tags/receive-tag', {});
+    return result.data;
+  },
+
+
+
+
+
 }

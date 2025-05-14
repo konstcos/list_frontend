@@ -15,7 +15,6 @@ const emit = defineEmits(['update:modelValue'])
 let linksLoading = ref(false)
 let categories = ref([])
 let categoriesById = ref({})
-// let selectedCategories = ref([])
 
 const selectedCategories = computed({
   get: () => props.modelValue,

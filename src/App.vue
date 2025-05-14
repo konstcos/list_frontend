@@ -154,6 +154,12 @@ export default {
                 icon: 'pi pi-folder',
                 command: () => this.$router.push('/categories'),
               },
+              {
+                key: 'tags',
+                label: 'Тэги',
+                icon: 'pi pi-folder',
+                command: () => this.$router.push('/tags'),
+              },
             ],
           },
           {
@@ -207,6 +213,12 @@ export default {
                 label: 'Категории',
                 icon: 'pi pi-folder',
                 command: () => this.$router.push('/categories'),
+              },
+              {
+                key: 'tags',
+                label: 'Тэги',
+                icon: 'pi pi-folder',
+                command: () => this.$router.push('/tags'),
               },
             ],
           },
