@@ -2,7 +2,7 @@ import useUser from "../../entities/UserEntity.js";
 import api from "../../api/auth.js";
 import userApi from "../../api/user.js";
 
-const {setUser, setToken, setLogged, clearUser, setLoginProcessed} = useUser();
+const { setUser, setToken, setLogged, clearUser, setLoginProcessed } = useUser();
 
 
 export default class LoginRepository {
@@ -43,6 +43,7 @@ export default class LoginRepository {
   }
 
   async checkAuth() {
+    let resultOutput = false;
     try {
       const result = await userApi.getUser();
 
@@ -50,12 +51,14 @@ export default class LoginRepository {
         setUser(result.data.user);
         setLogged(true);
         setLoginProcessed(true);
-        return true;
+        resultOutput = true;
       }
     } catch (error) {
       clearUser();
-      return false;
     }
+
+    setLoginProcessed(true);
+    return resultOutput;
   }
 
   logout() {
